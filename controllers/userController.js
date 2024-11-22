@@ -18,3 +18,14 @@ export const createUser = async (req, res) =>{
         res.status(500).json({ error: error.message });
       }
 }
+
+export const updateUser = async (req, res) => {
+  try {
+
+    const user = await userModel.updateUser(req.params, req.body)
+
+    res.sendStatus(200)
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}

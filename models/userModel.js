@@ -1,5 +1,6 @@
 import mysql2 from 'mysql2/promise';
 import dbConfig from '../config/db.js';
+import { hashPassword } from '../utils/hashUtils.js';
 
 export async function getUsers(params) {
 
@@ -10,7 +11,7 @@ export async function getUsers(params) {
         let queryParams = []
 
         if(Object.keys(params).length){
-            let { id, nome, cpf, telefone, data_nascimento, email, genero, status} = params
+            let { id, nome, cpf, telefone, data_nascimento, genero, status} = params
 
             if(id){
                 query += ` AND ID IN (?)`
@@ -35,11 +36,6 @@ export async function getUsers(params) {
             if(data_nascimento){
                 query += ` AND DATA_NASCIMENTO IN (?)`
                 queryParams.push(data_nascimento)
-            }
-
-            if(email){
-                query += ` AND EMAIL IN (?)`
-                queryParams.push(email)
             }
 
             if(genero){
@@ -74,21 +70,27 @@ export async function createUser(user){
     console.log(user)
     try {
 
-    let { nome, cpf, telefone, data_nascimento, email, genero} = user
+    let { nome, cpf, telefone, data_nascimento, email, genero, senha} = user
 
     const [result] = await pool.query(`INSERT INTO PESSOA (NOME, 
                                                            CPF, 
                                                            TELEFONE, 
-                                                           DATA_NASCIMENTO, 
-                                                           EMAIL, 
+                                                           DATA_NASCIMENTO,
                                                            GENERO)
                                                    VALUES (upper(?),
                                                            ?,
                                                            ?,
                                                            str_to_date(?, "%d/%m/%Y"),
-                                                           upper(?),
                                                            upper(?))`,
-                                      [nome, cpf, telefone, data_nascimento, email, genero]);
+                                      [nome, cpf, telefone, data_nascimento, genero]);
+
+    const idPessoa = result.insertId;
+    const hashSenha = await hashPassword(senha)
+
+    console.log(`ID inserido: ${idPessoa} | Senha criptografada: ${hashSenha}`)
+    
+    //const [usuario] = await pool.query();
+
     
     return result.insertId;
     } catch (error) {
@@ -96,5 +98,27 @@ export async function createUser(user){
         throw error;
     } finally {
         pool.end();
+    }
+}
+
+export async function updateUser(params, user){
+    const pool = mysql2.createPool(dbConfig)
+
+    try {
+    
+        let { id } = params
+        let { nome, telefone, data_nascimento, email, genero} = user
+
+        const [result] = await pool.query(`UPDATE PESSOA SET NOME = upper(?), 
+                                                             TELEFONE = ?, 
+                                                             DATA_NASCIMENTO = str_to_date(?, "%d/%m/%Y"),  
+                                                             GENERO = upper(?)
+                                                       WHERE ID = ?`,
+                                        [nome, telefone, data_nascimento, genero, id]);
+
+    } catch (error) {
+        console.error(error);
+    } finally {
+        pool.end()
     }
 }
