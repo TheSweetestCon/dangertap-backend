@@ -1,8 +1,8 @@
-import * as userModel from '../models/userModel.js'
+import {UserModel} from '../models/userModel.js'
 
 export const getUsers = async (req, res) => {
     try {
-      const users = await userModel.getUsers(req.query);
+      const users = await UserModel.getUsers(req.query);
       res.json(users);
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -12,7 +12,7 @@ export const getUsers = async (req, res) => {
 export const createUser = async (req, res) =>{
     try {
         console.log(req.body)
-        const user = await userModel.createUser(req.body);
+        const user = await UserModel.createUser(req.body);
         res.sendStatus(200)
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -21,8 +21,8 @@ export const createUser = async (req, res) =>{
 
 export const updateUser = async (req, res) => {
   try {
-
-    const user = await userModel.updateUser(req.params, req.body)
+    const { id } = req.params
+    const user = await UserModel.updateUser(id, req.body)
 
     res.sendStatus(200)
   } catch (error) {
