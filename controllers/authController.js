@@ -2,6 +2,7 @@ import { UserModel } from "../models/userModel.js";
 import { comparePassword } from '../utils/hashUtils.js'
 
 export const login = async (req, res) => {
+    console.log(req.body)
     const { email, senha } = req.body
 
     try {
@@ -15,11 +16,11 @@ export const login = async (req, res) => {
             return
         }
 
-        if (t(oUpperCase(email) === user.email) && (await comparePassword(senha, hashedPassword))){
+        if (email.toUpperCase() === user[0]?.email && (await comparePassword(senha, hashedPassword))){
             res.status(200).json({token: 'abc'}) //TESTAR
         }
         
-        res.json(user)
+        res.json(user[0])
 
     } catch (error) {
 
