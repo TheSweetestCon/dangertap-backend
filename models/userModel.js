@@ -65,8 +65,8 @@ export class UserModel {
 
   static async getByEmail(email){
 
-    const [result] = await pool.query(`SELECT * FROM USUARIO WHERE EMAIL = upper(?)`, [email])
-    
+    const [result] = await pool.query(`SELECT p.*, u.* FROM USUARIO u INNER JOIN PESSOA p ON u.id_pessoa = p.id WHERE EMAIL = upper(?)`, [email])
+
     return result
 
   }

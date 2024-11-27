@@ -1,8 +1,14 @@
 import { UserModel } from "../models/userModel.js";
 import { comparePassword } from '../utils/hashUtils.js'
+import jwt from 'jsonwebtoken'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+
+const secret = process.env.SECRET
 
 export const login = async (req, res) => {
-    console.log(req.body)
+
     const { email, senha } = req.body
 
     try {
@@ -16,11 +22,16 @@ export const login = async (req, res) => {
             return
         }
 
-        if (email.toUpperCase() === user[0]?.email && (await comparePassword(senha, hashedPassword))){
-            res.status(200).json({token: 'abc'}) //TESTAR
-        }
-        
-        res.json(user[0])
+        const token = jwt.sign({name: user[0]?.nome}, secret, {expiresIn: '30s'})
+        console.log(token)
+
+
+        res.status(200).json({
+            message: 'Login realizado com sucesso!', 
+            data: {
+                token
+            }}) //TESTAR
+
 
     } catch (error) {
 
@@ -28,3 +39,4 @@ export const login = async (req, res) => {
         res.status(500).json({ message: "Erro no servidor", error})
     }
 }
+
