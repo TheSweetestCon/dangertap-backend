@@ -5,8 +5,6 @@ export class UserModel {
 
   static async getUsers(params) {
 
-    try {
-
       let query = `SELECT * FROM PESSOA WHERE 1=1`;
       let queryParams = [];
 
@@ -53,12 +51,6 @@ export class UserModel {
       const [rows] = await pool.query(query, queryParams);
       return rows;
 
-    } catch (error) {
-
-      console.error('Error fetching users:', error);
-      throw error;
-
-    }
   }
 
 
@@ -71,10 +63,30 @@ export class UserModel {
 
   }
 
+  static async getResponsavel(userID){
+
+    const [result] = await pool.query(
+          `SELECT R.ID_RESPONSAVEL,
+                  PR.NOME AS RESPONSAVEL,
+                  R.ID_PESSOA,
+                  P.NOME,
+                  L.LATITUDE,
+                  L.LONGITUDE,
+                  L.PRECISAO
+             FROM PESSOA P
+        LEFT JOIN LOCALIZACAO L
+               ON P.ID = L.ID_PESSOA
+       INNER JOIN RESPONSAVEL R
+               ON P.ID = R.ID_PESSOA
+       INNER JOIN PESSOA PR
+               ON PR.ID = R.ID_RESPONSAVEL
+            WHERE PR.ID = ?`, [userID])
+
+    return result
+  }
+
 
   static async createUser(user) {
-
-    try {
 
       const { nome, cpf, telefone, data_nascimento, email, genero, senha } = user;
 
@@ -109,18 +121,11 @@ export class UserModel {
 
       return idPessoa;
 
-    } catch (error) {
-
-      console.error(error);
-      throw error;
-
-    }
   }
 
 
 
   static async updateUser(id, user) {
-    try {
 
       const { nome, telefone, data_nascimento, email, genero } = user;
 
@@ -133,11 +138,5 @@ export class UserModel {
         [nome, telefone, data_nascimento, genero, id]
       );
 
-    } catch (error) {
-
-      console.error(error);
-      throw error;
-
-    }
   }
 }
