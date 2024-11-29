@@ -4,7 +4,7 @@ import { validateToken } from '../middlewares/authMiddleware.js'
 
 const router = express.Router();
 
-//router.use(validateToken)
+router.use(validateToken)
 
 router.get('/', getUsers)
 router.get('/responsavel', getResponsavel)

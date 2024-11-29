@@ -22,7 +22,7 @@ export const validateToken = (req, res, next) => {
         
 
         if(error.name === "TokenExpiredError"){
-            res.status(401).json({ message: "Token expirado!", error})
+            res.status(401).json({ message: error.name, error})
             console.log(error.message)
         } else {
             res.status(401).json({ message: "Token inválido", error})

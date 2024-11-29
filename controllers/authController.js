@@ -22,8 +22,7 @@ export const login = async (req, res) => {
             return
         }
 
-        const token = jwt.sign({name: user[0]?.nome}, secret, {expiresIn: '30s'})
-        console.log(token)
+        const token = jwt.sign({name: user[0]?.nome}, secret)
 
         console.log(user[0]?.ID_PESSOA)
 
