@@ -45,3 +45,25 @@ export const updateUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 }
+
+export const setLocation = async (req, res) => {
+  try{
+    
+    const user = await UserModel.setLocation(req.body)
+
+    res.sendStatus(200)
+  } catch (error) {
+    res.status(500).json({error: error.message})
+  }
+}
+
+export const getLocation = async (req, res) => {
+  try {
+    const { id } = req.query
+
+    const location = await UserModel.getLocation(id)
+    res.json(location)
+  } catch (error) {
+    res.status(500).json({error: error.message})
+  }
+}
