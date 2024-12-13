@@ -183,6 +183,14 @@ export class UserModel {
 
     return result
   }
+
+  static async getToken(userID){
+
+    const [result] = await pool.query(
+      `SELECT TOKEN FROM DISPOSITIVOS WHERE ID_USUARIO = ?`,[userID])
+
+    return result;
+  }
   
 }
 
