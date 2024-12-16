@@ -9,22 +9,6 @@ export const getUsers = async (req, res) => {
     }
   };
 
-  export const getResponsavel = async (req, res) => {
-    try {
-      const { id } = req.query
-
-      if(!id){
-        res.status(403).json({ message: 'Necessário ID do responsável!' });
-        return
-      }
-
-      const responsavel = await UserModel.getResponsavel(id);
-      res.json(responsavel);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  };
-
 export const createUser = async (req, res) =>{
     try {
         console.log(req.body)
@@ -46,25 +30,5 @@ export const updateUser = async (req, res) => {
   }
 }
 
-export const setLocation = async (req, res) => {
-  try{
-    
-    const user = await UserModel.setLocation(req.body)
 
-    res.sendStatus(200)
-  } catch (error) {
-    res.status(500).json({error: error.message})
-  }
-}
-
-export const getLocation = async (req, res) => {
-  try {
-    const { id } = req.query
-
-    const location = await UserModel.getLocation(id)
-    res.json(location)
-  } catch (error) {
-    res.status(500).json({error: error.message})
-  }
-}
 

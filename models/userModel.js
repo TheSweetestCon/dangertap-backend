@@ -63,32 +63,6 @@ export class UserModel {
 
   }
 
-  static async getResponsavel(userID){
-
-    const [result] = await pool.query(
-          `SELECT R.ID_RESPONSAVEL,
-		              PR.NOME AS RESPONSAVEL,
-                  R.ID_PESSOA,
-                  P.NOME,
-                  L.LATITUDE,
-                  L.LONGITUDE,
-                  L.PRECISAO
-	           FROM PESSOA P
-        LEFT JOIN LOCALIZACAO L
-		           ON P.ID = L.ID_PESSOA
-       INNER JOIN RESPONSAVEL R
-		           ON P.ID = R.ID_PESSOA
-       INNER JOIN PESSOA PR
-		           ON PR.ID = R.ID_RESPONSAVEL
-	          WHERE PR.ID = ?
-              AND L.ID IN (SELECT MAX(L2.ID)
-					                   FROM LOCALIZACAO L2
-				                 GROUP BY ID_PESSOA)
-	             OR L.ID IS NULL`, [userID])
-
-    return result
-  }
-
 
   static async createUser(user) {
 
@@ -144,53 +118,8 @@ export class UserModel {
 
   }
 
-  static async setLocation(user) {
-    const { id, latitude, longitude, precisao, emergencia } = user
-
-    
-    const [result] = await pool.query(
-      `INSERT INTO LOCALIZACAO (ID_PESSOA,
-                                LATITUDE,
-                                LONGITUDE,
-                                PRECISAO,
-                                DATA_INSERCAO,
-                                EMERGENCIA)
-                        VALUES (?,
-                                ?,
-                                ?,
-                                ?,
-                                NOW(),
-                                ?)
-      `, [id, latitude, longitude, precisao, emergencia])
-
-      return result.insertId
-  }
-
-  static async getLocation(id) {
-
-    const [result] = await pool.query(
-      `SELECT MAX(ID),
-              LATITUDE,
-              LONGITUDE,
-              PRECISAO
-         FROM LOCALIZACAO
-        WHERE ID_PESSOA = ?
-     GROUP BY LATITUDE,
-              LONGITUDE,
-              PRECISAO
-      `, [id])
-
-
-    return result
-  }
-
-  static async getToken(userID){
-
-    const [result] = await pool.query(
-      `SELECT TOKEN FROM DISPOSITIVOS WHERE ID_USUARIO = ?`,[userID])
-
-    return result;
-  }
   
+
+
 }
 
