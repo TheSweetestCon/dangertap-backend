@@ -42,7 +42,7 @@ export async function sendNotification(req, res) {
 
         res.status(200).json({results})
     } catch (err) {
-        console.error('Erro na consulta ao banco:', error);
+        console.error('Erro na consulta ao banco:', err);
         res.status(500).json({ error: 'Erro ao processar a requisição' });
     }
 }
