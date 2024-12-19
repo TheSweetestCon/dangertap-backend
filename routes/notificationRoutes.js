@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post('/set', Device.setPushToken)
 router.post('/send', Device.sendNotification)
+router.post('/delete', Device.deletePushToken)
 
 
 export default router

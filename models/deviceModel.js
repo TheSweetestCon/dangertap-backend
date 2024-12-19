@@ -3,8 +3,6 @@ import { pool } from '../config/db.js';
 export class DeviceModel {
     static async getTokenbyId(userID){
 
-
-
         const [result] = await pool.query(
             `SELECT PR.ID AS ID_RESPONSAVEL,
                     PR.NOME,
@@ -43,5 +41,20 @@ export class DeviceModel {
             `, [pushToken, ID, plataform, deviceName])
 
         console.log(result)
+    }
+
+    static async deleteToken(userID, pushToken){
+        const [user] = await pool.query(`SELECT ID FROM USUARIO WHERE ID_PESSOA = ?`, userID)
+
+        console.log(user)
+
+        const { ID } = user[0]
+
+        const result = await pool.query(
+            `DELETE FROM DISPOSITIVO
+              WHERE TOKEN = ?
+                AND ID_USUARIO = ?`, [pushToken, ID])
+
+        return result
     }
 }

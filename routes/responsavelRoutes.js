@@ -4,9 +4,10 @@ import { validateToken } from '../middlewares/authMiddleware.js'
 
 const router = express.Router();
 
-router.use(validateToken)
+//router.use(validateToken)
 
 router.get('/', Responsavel.getResponsavel)
+router.post('/', Responsavel.setResponsavel)
 
 
 export default router

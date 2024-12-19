@@ -62,20 +62,25 @@ export class UserModel {
 
   static async createUser(user) {
 
-      const { nome, cpf, telefone, data_nascimento, email, genero, senha } = user;
+      let { nome, cpf, data_nascimento, email, genero, senha } = user;
+
+      if (!genero || (genero !== 'M' || genero !== 'F')){
+        genero = null
+      }
+
+      cpf = cpf.replace(/[^\d]/g, '')
+
 
       const [result] = await pool.query(
             `INSERT INTO PESSOA (NOME, 
                                  CPF, 
-                                 TELEFONE, 
                                  DATA_NASCIMENTO, 
                                  GENERO)
                          VALUES (upper(?), 
                                  ?, 
-                                 ?, 
                                  str_to_date(?, "%d/%m/%Y"), 
                                  upper(?))`,
-        [nome, cpf, telefone, data_nascimento, genero]
+        [nome, cpf, data_nascimento, genero]
       );
 
       const idPessoa = result.insertId;

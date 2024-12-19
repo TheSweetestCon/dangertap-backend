@@ -18,4 +18,14 @@ export class ReponsavelModel{
 
         return result
     }
+
+    static async setResponsavel(userID, respID){
+        const [result] = await pool.query(
+            `INSERT INTO RESPONSAVEL (ID_PESSOA, ID_RESPONSAVEL)
+             VALUES (?, ?)
+            `, [userID, respID])
+        
+        return result.insertId
+    }
 }
+
