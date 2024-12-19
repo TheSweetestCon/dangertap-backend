@@ -3,18 +3,13 @@ import { hashPassword } from '../utils/hashUtils.js';
 
 export class UserModel {
 
-  static async getUsers(params) {
+  static async getUser(params) {
 
-      let query = `SELECT * FROM PESSOA WHERE 1=1`;
+      let query = `SELECT 1 FROM PESSOA WHERE 1=1`;
       let queryParams = [];
 
       if (Object.keys(params).length) {
-        const { id, nome, cpf, telefone, data_nascimento, genero, status } = params;
-
-        if (id) {
-          query += ` AND ID IN (?)`;
-          queryParams.push(id);
-        }
+        const { nome, cpf, telefone, data_nascimento, genero, status } = params;
 
         if (nome) {
           let name = `%${nome}%`;
@@ -46,6 +41,7 @@ export class UserModel {
           query += ` AND STATUS IN (?)`;
           queryParams.push(status);
         }
+
       }
 
       const [rows] = await pool.query(query, queryParams);
@@ -57,7 +53,7 @@ export class UserModel {
 
   static async getByEmail(email){
 
-    const [result] = await pool.query(`SELECT p.*, u.* FROM USUARIO u INNER JOIN PESSOA p ON u.id_pessoa = p.id WHERE EMAIL = upper(?)`, [email])
+    const [result] = await pool.query(`SELECT p.ID, p.NOME, u.EMAIL, u.SENHA FROM USUARIO u INNER JOIN PESSOA p ON u.ID_PESSOA = p.id WHERE EMAIL = upper(?)`, [email])
 
     return result
 

@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 
-router.get('/', validateToken, User.getUsers)
+router.post('/search', User.getUser)
 router.post('/', User.createUser)
 router.put('/:id', validateToken, User.updateUser)
 
